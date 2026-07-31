@@ -4,3 +4,7 @@
 run
 *~
 .DS_Store
+build/
+cmake-build-*/
+.vscode/
+*.log
