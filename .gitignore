@@ -1,0 +1,6 @@
+*.out
+*.elf
+*.o
+run
+*~
+.DS_Store
