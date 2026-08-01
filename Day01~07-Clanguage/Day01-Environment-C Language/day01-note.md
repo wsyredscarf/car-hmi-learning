@@ -133,13 +133,74 @@ int main(void)
     return 0;
 
 }
+---------
+#include <stdio.h>
+#include <stdlib.h>
 
+// 1.全局变量 → 全局初始化区(.data)
+    int global_val = 100;
+// 2.未初始化全局变量 → 全局未初始化区(.bss)
+    int global_uninit;
+
+void func_test(int param) // param：函数形参，栈
+{
+    // 局部变量（栈）
+    int stack_local = 10;
+    static int static_local = 1; //静态局部变量：全局静态区
+
+    printf("【栈】func_test内局部变量 stack_local 地址:      %p\n", &stack_local);
+    printf("【栈】函数形参 param 地址:                     %p\n", &param);
+    printf("【全局区】静态局部变量 static_local 地址:      %p\n", &static_local);
+}
+
+int main(void)
+{
+    // 字符串字面量 → 只读常量区 .rodata
+    char *str_const = "hello_memory";
+
+    // 局部变量（栈）
+    int main_local = 20;
+
+    // 堆内存：手动malloc申请
+    char *heap_buf = (char *)malloc(64);
+
+    printf("==================== 内存五大分区地址展示 ====================\n");
+    printf("【代码段text】main函数代码地址:                 %p\n", main);
+    printf("【常量区rodata】字符串常量 str_const地址:       %p\n", str_const);
+    printf("\n");
+
+    printf("【全局区.data】初始化全局变量 global_val地址:   %p\n", &global_val);
+    printf("【全局区.bss】未初始化全局变量 global_uninit地址:%p\n", &global_uninit);
+    printf("\n");
+
+    printf("【栈stack】main函数内局部变量 main_local地址:   %p\n", &main_local);
+    func_test(88);
+    printf("\n");
+
+    printf("【堆heap】malloc申请内存地址：%p\n", heap_buf);
+
+    free(heap_buf); //堆内存释放
+    heap_buf = NULL;
+
+    return 0;
+}
 
 ## 遇到问题 & 解决方案
-git配置时网络卡顿：切换SSH，或者端口号
+问题：代码分区静态变量测试、指针地址赋值是否可修改
+char str[] = "test";
+char *p    = "test";
+// 1、字符数组
+char str[] = "test";
+数组在栈；"test"内容拷贝进栈；内存可读写
+// 2、字符指针
+char *p = "test";
+指针p本身在栈；
+字符串"test"是字面量，存放于.rodata只读常量区；
+p仅保存常量区字符串首地址；禁止修改内容
 
+解决方案：代码打印测试，不一样结果，指针的这个是指针只能保存地址
 ## 重要知识点总结
-git代码管理、指令灵活应变
+指针和数组，常量的关系
 
 ## 截图
 无
