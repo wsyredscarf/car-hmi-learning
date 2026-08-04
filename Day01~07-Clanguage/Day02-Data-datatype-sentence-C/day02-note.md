@@ -31,3 +31,13 @@ malloc、野指针、悬空指针
 #pragma pack 修改对齐
 struct 里面混合位段
 union 带 pack、带位段
+
+---------------------------------------
+
+经过四个小时的详细思考，完全掌握
+普通 struct 大小、struct 嵌套 struct、struct 里面套数组
+union 基础原理
+#pragma pack 修改对齐
+struct 里面混合位段
+union 带 pack、带位段、
+综合嵌套
