@@ -26,16 +26,16 @@ struct Ss1
     short s;//8+2=10
 };
 
-//最大基础值为4（int类型）、结构体值为12
+//最大基础值或者叫对比值为4（int类型）、结构体值为12
 struct Inner1{
     char c;//1
     int arr[2]; //int数组，2个int
 };
 
-//2和结构体基础值对比填充为4，4+8（最大值）+3=15+5=20
+//2和结构体基础值对比填充为4，4+12（最大值）=16，16+3=19，19+1=20
 struct Test1{
     short s;//2                       2和下面的最大基础值填充对比为4
-    struct Inner1 in;//算出可知：对齐值：4，最大值是8      
+    struct Inner1 in;//算出可知：对齐值：4，最大值是12
     char buf[3];//3
 };
 
@@ -80,8 +80,8 @@ struct S3
 
 struct S4
 {
-    short s;
-    char c1[3];
+    short s;   //2
+    char c1[3];//2是1的整数倍，2+3=5是1的整数倍，5+2=7，7不是4的整数倍，7+1=补齐到8+4=12，12是2的倍数，12+2=14，14不是4的倍数，14+2=16
     char c2[2];
     int arr[1];
     short end;
@@ -101,13 +101,13 @@ struct B1
 {
     unsigned int a : 3;
     unsigned int b : 5;
-};
+};//3+5bit=8bit，所以一个字节int，为4字节大小结构体
 
 struct B2
 {
     unsigned int a :16;
     unsigned int b :17;
-};
+};//16+17=33>32，所以是两个四字节，所以是8字节
 
 #pragma pack(2)
 struct B3
@@ -240,7 +240,7 @@ struct N1{
 #pragma pack(2)
 struct N2{
     char buf[5]; //0‑4，offset=5
-    int a;       //min(4,2)=2，offset5是奇数，填充1→6；占4 →offset10
+    int a;       //min(4,2)=2，offset5是奇数，填充1→6；占4 →offset10,10是a的偏移量2的整数倍，所以结构体大小为10
 };
 #pragma pack()   // 恢复默认对齐
 
@@ -262,6 +262,14 @@ struct S7
 };
 #pragma pack()
 
+#pragma pack(2)
+struct S
+{
+    char a;         // offset 0，占1字节
+    unsigned int b :3; //位段，容器unsigned int(4字节)。A=min(4,2)=2。char后面补1padding到2，开启4字节容器。
+    short c;        //short对齐 min(2,2)=2
+};
+#pragma pack()
 
 //-------------------------------------------
 /*union 共用体
@@ -276,21 +284,12 @@ union U3
     short val;
 };
 
-//字节最大为7
+//字节最大为7,7不是实际对比值2的倍数，所以7+1=8
 #pragma pack(2)
 union Ub
 {
     char buf[7];
     int i;
-};
-#pragma pack()
-
-#pragma pack(2)
-struct S
-{
-    char a;         // offset 0，占1字节
-    unsigned int b :3; //位段，容器unsigned int(4字节)。A=min(4,2)=2。char后面补1padding到2，开启4字节容器。
-    short c;        //short对齐 min(2,2)=2
 };
 #pragma pack()
 
@@ -341,9 +340,11 @@ int main(void)
 {
     printf("%ld\n",sizeof(struct Ss1));//
     printf("%ld\n",sizeof(union Ub));//
-    printf("%ld\n",sizeof(struct B1));//
+    printf("%ld\n",sizeof(struct B2));//
     printf("%ld\n",sizeof(struct T5));//
-     printf("%ld\n",sizeof(struct sss1));//
+    printf("%ld\n",sizeof(struct sss1));//
+    printf("-------%ld\n",sizeof(union Ub));//
+    printf("-------%ld\n",sizeof(struct N2));//
     return 0;
 
 }
