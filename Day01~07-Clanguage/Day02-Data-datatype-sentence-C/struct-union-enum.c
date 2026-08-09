@@ -300,11 +300,11 @@ union Ub
 把结构体、共用体、位域、内存对齐（带 pack 和不带 pack）全部揉在一起。
 */
 //一、在 #pragma pack(2) 的压缩环境下，求以下结构体的大小。
-#pragma pack(2)
+#pragma pack(4)
 struct TestA {
     unsigned int a : 10;    // 位域 a，占 10 bit
     unsigned int b : 14;    // 位域 b，占 14 bit
-    unsigned int c : 12;    // 位域 c，占 12 bit
+    unsigned int c : 12;    // 位域 c，占 12 bit（根据GCC-linux下规则，a和b的字节单元多填充c的8位，c此处剩余4位 只分配2字节位进行保存）
     union {
         char d[5];          // 数组 5 个字节
         int e;              // 整型 4 个字节
@@ -313,10 +313,24 @@ struct TestA {
 #pragma pack()
 /*
 解析：pack（2），10+14=24，32-24=8，8不够c12存，所以单独开辟一个单元，所以ab是4字节，c是4字节
+
      union内部，char为1字节（1，2）=1。int为4字节（4，2）=2.注意此处与pack做对比是类型大小去做对比取对比值，不是数组大小或者其他的。
-     所以：union对外对齐值为2，大小还是为5。
-     （4，2）=2，（4，2）=2，（4，2）=2。 所以：4+4=8，8%2=0.所以不用填充，8+5=13，结构体整体对齐值 = min(最大成员 int, pack2) = 2
+     所以：根据union对外对齐值规则此共用体最大值为2，字节大小还是为5。
+        union 最大成员字节 = 5 → union 原始大小 5
+        union 对外对齐模数 = max (min (1,2), min (4,2) ) = 2
+        union 自身尾部补齐到对齐模数 2 的倍数：5%2=1，补 1 字节 → union 整体占 6 字节
+
+     （4，2）=2，（4，2）=2。 所以：4+4=8，8%2=0.所以不用填充，8+5=13，结构体整体对齐值 = min(最大成员 int, pack2) = 2
      所以13+1=14%2=0，最终为14。这里原本是对齐值是最大成员变量4的，因为最大成员变量的有效对齐值是2，所以如此计算
+
+     GCC 会缩小位域存储单元至 pack 指定的 2 字节粒度，不再强制使用完整 4 字节容器，节省空间，最终结构体大小 12。
+
+    union成员之间：不填充；
+    union自己最后：必须补齐到自身对齐模数整数倍；
+    struct 内部放成员（包含 union）：成员前面按需填充；
+    struct整体最后：必须补齐到全结构最大对齐模数整数倍。
+
+
 */
 
 
@@ -344,7 +358,7 @@ int main(void)
     printf("%ld\n",sizeof(struct T5));//
     printf("%ld\n",sizeof(struct sss1));//
     printf("-------%ld\n",sizeof(union Ub));//
-    printf("-------%ld\n",sizeof(struct N2));//
+    printf("-------%ld\n",sizeof(struct TestA));//
     return 0;
 
 }

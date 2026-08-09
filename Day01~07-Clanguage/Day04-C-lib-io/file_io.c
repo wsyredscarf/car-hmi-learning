@@ -153,7 +153,7 @@ void fun_bin_fwrite(void)
 
 void fun_bin_fread(void)
 {
-    FILE *fp =fopen("car.bin","rw");
+    FILE *fp =fopen("car.bin","rb");
     if(fp==NULL) return;
     Carinfo tmp;
     fread(&tmp,sizeof(Carinfo),1,fp);
