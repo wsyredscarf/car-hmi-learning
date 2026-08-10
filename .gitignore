@@ -1,10 +1,8 @@
-*.out
-*.elf
 *.o
-run
-*~
-.DS_Store
-build/
-cmake-build-*/
-.vscode/
-*.log
+*.a
+*.so
+*.i
+*.s
+static
+dynamic
+*.out
