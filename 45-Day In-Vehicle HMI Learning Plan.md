@@ -2,14 +2,13 @@
 code_car/
 ├── 45 天车载 HMI 学习总计划.md
 ├── .gitignore
-├── 阶段 - Day01~Day07-C 语言深度攻坚
-├── 阶段 - Day08~Day09-Makefile 编译工具链
-├── 阶段 - Day10~Day12-Linux 进程线程与同步
-├── 阶段 - Day13~Day18-IPC 与 Socket 网络编程
-├── 阶段 - Day19~Day23-C++ 基础入门
-├── 阶段 - Day24~Day32-Qt6_QML 车载 HMI
-├── 阶段 - Day33~Day37 - 车载通信协议
-└── 阶段 - Day38~Day45-Autosar_HMI 项目实战
+├── 阶段 - Day01~Day05- C 语言深度攻坚
+├── 阶段 - Day06~Day11- linux基础-IPC与Socket网络编程-Makefile 编译工具链
+├── 阶段 - Day12~Day14- C++复习
+├── 阶段 - Day15~Day19- Qt6+QML+C++使用
+├── 阶段 - Day20~Day21- 底层基础通信总线UART/RS485、I2C、SPI 基础通信原理、Modbus、MQTT等等协议基础概念
+├── 阶段 - Day22~Day32- 车载通信代码能写，车载协议优先理解架构，各种车载标准技术栈
+├── 阶段 - Day33~Day45- 总体复盘+各技术栈的类的项目实现+面试
 
 
 # 阶段1：C语言深度攻坚（第01～07天）
