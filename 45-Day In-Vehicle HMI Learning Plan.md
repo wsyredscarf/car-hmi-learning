@@ -104,3 +104,18 @@ code_car/
 git add .
 git commit -m "Day01 C语言：指针练习代码与学习笔记完成"
 git push
+
+
+
+## *****************************************************##
+## 计划变更1.0
+code_car/
+├── 45 天车载 HMI 学习总计划.md
+├── .gitignore
+├── 阶段 - Day01~Day05- C 语言深度攻坚
+├── 阶段 - Day06~Day11- linux基础-IPC与Socket网络编程-Makefile 编译工具链
+├── 阶段 - Day12~Day14- C++复习
+├── 阶段 - Day15~Day19- Qt6+QML+C++使用
+├── 阶段 - Day20~Day30- 底层基础通信总线UART/RS485、I2C、SPI 基础通信原理、Modbus、MQTT等等协议基础概念复习和动手调试
+├── 阶段 - Day31~Day00- 车载通信代码能写，车载协议理解架构，各种车载标准技术栈，总体复盘+各技术栈的类的项目实现+面试
+├── 阶段 - Day00~Day00- 
