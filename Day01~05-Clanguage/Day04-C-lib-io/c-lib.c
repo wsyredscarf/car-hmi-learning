@@ -101,9 +101,9 @@ char* my_strncat(char *dest, const char *src, size_t n)
 {
     char *start = dest;
     // 走到dest末尾
-    while (*dest) dest++;
+    while (*dest !='\0') dest++;
 
-    // 最多拷贝n个字符
+    // 最多拼接n个字符
     while (n > 0 && *src != '\0')
     {
         *dest = *src;
@@ -164,7 +164,7 @@ int main(void)
 {
      // 1. strlen 测试
     char buf1[] = "hello car";
-    printf("标准库strlen= %zu ,手写实现strlen= %zu\n",strlen(buf1),my_strlen(buf1));
+    printf("标准库strlen= %zu ,手写实现strlen= %zu,手写指针实现strlen= %zu\n",strlen(buf1),my_strlen(buf1),my_strlen_p(buf1));
 
     //2. strcpy 危险拷贝（无边界） vs strncpy安全拷贝(需要手动补齐\0)
     char dest[10] = {0};
