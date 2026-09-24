@@ -110,7 +110,7 @@ char *my_strcpy(char*dest ,const char *src)//此函数等于strcpy(char*dest,cha
 }
 char *my_strncpy(char *dest, char*src,size_t n)
 {
-    if(dest == NULL || src ==NULL) return NULL;
+    if(dest == NULL || src ==NULL|| n==0) return NULL;
     char *start = dest;
     while(n>1 && *src!='\0')//n>1 留一个空位给\0
     {
@@ -120,13 +120,31 @@ char *my_strncpy(char *dest, char*src,size_t n)
     }
     *dest = '\0';
     return start;
-
 }
+// 严格模拟标准库 strncp:
+char *my_strncpy_std(char *dest, const char *src, size_t n)
+{
+    char *start = dest;
+    while (n > 0 && *src != '\0') {
+        *dest = *src;
+        dest++;
+        src++;
+        n--;
+    }
+    while (n > 0) {   // 剩余空间补 '\0'
+        *dest = '\0';
+        dest++;
+        n--;
+    }
+    return start;
+}
+
+
 
 /*
 //3、字符串拼接strcat()包含\0.  strncat(char *dest ,char *src,size_t n)不包含\0
 */
-char *my_strcat(char *dest ,char *src,size_t n)
+char *my_strcat(char *dest ,const char *src,size_t n)
 {
     if(dest ==NULL || src== NULL) return NULL;
     char *start = dest;
@@ -144,7 +162,7 @@ char *my_strcat(char *dest ,char *src,size_t n)
     *dest = '\0';
     return start; 
 }
-char * my_strncat(char *dest,char*src ,size_t n)
+char * my_strncat(char *dest,const char*src ,size_t n)
 {
     if(dest==NULL || src ==NULL) return NULL; 
 
@@ -302,18 +320,6 @@ int main(int vrgc,char vrgv[])
     const char *str_ro = "read_only";//字符串字面量（常量区），不可修改
     // str_ro[0] = 'X'; // 只读段，运行段错误
     printf("只读字符串：%s\n", str_ro);
-
-    //输入输出------------------
-
-
-
-
-
-
-
-
-
-
 
     return 0;
 }
