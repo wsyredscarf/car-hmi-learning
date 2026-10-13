@@ -158,7 +158,7 @@ ET（边缘触发）：只有状态变化时通知一次。必须搭配非阻塞
 信号	        单向	快	   事件通知	      异步，信息量少
 口述：“共享内存最快，因为数据直接在内存里共享，不需要内核拷贝。但它需要信号量来同步。管道简单但只能单向，消息队列有边界，信号用于异步通知。”
 
-
+//--------------------------------------------
 ##
 管道（pipe）：
 
@@ -182,7 +182,6 @@ if (pid == 0) {
 读写端都关闭后，读端返回 0。
 写端关闭，读端 read 返回 0；读端关闭，写端 write 触发 SIGPIPE。
 
-
 ##
 命名管道（FIFO）：
 
@@ -198,28 +197,7 @@ read(fd, buf, sizeof(buf));
 close(fd);
 区别：FIFO 在文件系统有名字，任意进程都能打开；匿名管道只能用于有亲缘关系的进程。
 
-
-##
-共享内存（最快）：
-
-// 1. 创建共享内存
-int shmid = shmget(IPC_PRIVATE, 1024, IPC_CREAT | 0666);
-// 2. 映射到进程地址空间
-char *addr = shmat(shmid, NULL, 0);
-// 3. 读写
-strcpy(addr, "hello shared memory");
-printf("%s\n", addr);
-// 4. 解除映射
-shmdt(addr);
-// 5. 删除共享内存
-shmctl(shmid, IPC_RMID, NULL);
-
-关键点：
-共享内存本身不提供同步机制，多个进程同时写会出问题。
-必须配合信号量或互斥锁使用。
-shmdt 只是解除映射，shmctl(IPC_RMID) 才是真正删除。
-
-
+//--------------------------------------------
 ##
 消息队列：
 
@@ -244,30 +222,7 @@ msgrcv(msqid, &rcv, sizeof(rcv.mtext), 1, 0);
 // 删除
 msgctl(msqid, IPC_RMID, NULL);
 特点：消息有边界，支持按类型读取，比管道灵活。消息队列
-c
-#include <sys/msg.h>
-
-struct msgbuf {
-    long mtype;      // 消息类型，必须 > 0
-    char mtext[128]; // 消息内容
-};
-
-// 创建
-int msqid = msgget(IPC_PRIVATE, IPC_CREAT | 0666);
-
-// 发送
-struct msgbuf msg;
-msg.mtype = 1;
-strcpy(msg.mtext, "hello");
-msgsnd(msqid, &msg, strlen(msg.mtext) + 1, 0);
-
-// 接收（按类型）
-struct msgbuf rcv;
-msgrcv(msqid, &rcv, sizeof(rcv.mtext), 1, 0);
-
-// 删除
-msgctl(msqid, IPC_RMID, NULL);
-特点：消息有边界，支持按类型读取，比管道灵活。
+//--------------------------------------------
 
 
 ##
@@ -283,10 +238,10 @@ sem_post(&sem);         // V 操作，加 1
 sem_destroy(&sem);
 互斥锁 vs 信号量：
 
-互斥锁有 所有权，谁锁谁解。
-信号量无 所有权，任何进程都能 post。
+互斥锁 有所有权，谁锁谁解。
+信号量 无所有权，任何进程都能 post。
 
-
+//--------------------------------------------
 ##
 信号（signal）：
 
@@ -313,12 +268,7 @@ SIGCHLD：子进程退出。
 信号用于异步事件通知，信息量少。实际项目中，共享内存+信号量用于大数据传输，
 socket 用于跨主机通信，管道用于父子进程间简单通信。
 */
-
-
-
-
-
-
+//--------------------------------------------
 
 //拓展：Reactor 模式，其实就是“用一个管家（epoll）统一监听所有客人，有事了再叫对应的服务员”。它是 Linux 高并发服务器（比如 Nginx、Redis、Netty）的核心架构。
 //核心思想：事件驱动 + 回调函数。Reactor 模式本质上就是“epoll + 回调函数”的封装

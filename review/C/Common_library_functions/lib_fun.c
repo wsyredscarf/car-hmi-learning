@@ -282,6 +282,10 @@ void *memset(void *s, int c, size_t n);
 memcpy
 void *memcpy(void *dest, const void *src, size_t n);
 内存拷贝。
+const char src[] = "Hello memcpy";
+char dest[20]
+// 复制包括 '\0' 在内的所有字符
+memcpy(dest, src, strlen(src) + 1);
 注意：不处理重叠内存。
 
 memmove
