@@ -226,20 +226,32 @@ msgctl(msqid, IPC_RMID, NULL);
 
 
 ##
-信号量（同步）：
+##POSIX标准信号量，常用于同步与互斥。
+    int main() {
+        // 1. 打开或创建命名信号量（用于进程间）
+        sem_t *sem = sem_open("/mysem", O_CREAT, 0644, 1);
+        if (sem == SEM_FAILED) { perror("sem_open"); return -1; }
 
-sem_t sem;
-sem_init(&sem, 1, 1);   // 1 表示进程间共享，初值 1
+        // 2. P操作（等待，减1）
+        sem_wait(sem);  // 若值为0则阻塞
 
-sem_wait(&sem);         // P 操作，减 1，为 0 时阻塞
-// 临界区
-sem_post(&sem);         // V 操作，加 1
+        // 3. 临界区
+        printf("enter critical section\n");
 
-sem_destroy(&sem);
-互斥锁 vs 信号量：
+        // 4. V操作（释放，加1）
+        sem_post(sem);
 
-互斥锁 有所有权，谁锁谁解。
-信号量 无所有权，任何进程都能 post。
+        // 5. 关闭和删除
+        sem_close(sem);
+        sem_unlink("/mysem");
+        return 0;
+    }
+    关键点：
+        信号量是同步工具，不传输数据。
+        互斥锁（Mutex）有所有权，谁锁谁解；
+        信号量无所有权，任何进程都能 post。
+        共享内存 + 信号量 = 完整的进程间数据同步解决方案。
+        P操作（wait）可能阻塞，V操作（post）唤醒。
 
 //--------------------------------------------
 ##

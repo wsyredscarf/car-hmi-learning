@@ -328,11 +328,13 @@ pthread_mutex_unlock(&mutex);
 ------------------------
 ##
 条件变量（Condition Variable）
-用于线程同步。必须用 while 判断条件，防止虚假唤醒。
+用于线程同步。必须用 while循环 判断条件，防止虚假唤醒。
 
 pthread_mutex_lock(&mutex);
+
 while (condition_is_false) {
-    pthread_cond_wait(&cond, &mutex); // 释放锁并等待，被唤醒后重新拿锁
+    pthread_cond_wait(&cond, &mutex); // 释放锁并等待，
+                                      //被唤醒后重新拿锁，线程会在条件变量上等待，直到其他线程通过 pthread_cond_signal 或 pthread_cond_broadcast 函数发出信号。
 }
 // 处理
 pthread_mutex_unlock(&mutex);
